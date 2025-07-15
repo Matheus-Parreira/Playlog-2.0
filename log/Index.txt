@@ -1,0 +1,4 @@
+Quantidade atual de playlists: 0;
+Quantidade total de playlists criadas: 0;
+   ID|                     NOME|    N° DE MÚSICAS (ATUAL)|         TOTAL DE MÚSICAS|       ÚLTIMA MODIFICAÇÃO|
+--------------------------------------------------------------------------------------------------------------
