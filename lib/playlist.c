@@ -171,7 +171,7 @@ void input_musica(Musica* msc) // Inserção manual dos principais dados de uma 
     scanf(" %[^\n]", msc->nome_artista);
     printf("Ano de lançamento: ");
     scanf(" %[^\n]", msc->ano_lancamento);
-    printf("País: ");
+    printf("País/região: ");
     scanf(" %[^\n]", msc->pais_musica);
 }
 
@@ -366,24 +366,32 @@ void buscar_musica_id(Play* pl) // Busca uma música na playlist dado o seu ID (
     }       
 }
 
-int condicao_busca_string(Elem* no, char string[], int msc_ou_art) // Verifica se o nome de determinada música/artista contém a string digitada
+int condicao_busca_string(Elem* no, char string[], int tipo_busca) // Verifica se o nome de determinada música/artista contém a string digitada
 {
-    if(msc_ou_art == 0) // Busca por nome de artista
+    if(tipo_busca == 0) // Busca por nome de artista
         return(StrStrIA(no->dados.nome_artista, string) != NULL);
-    else // Busca por nome de música
+    else if (tipo_busca == 1) // Busca por nome de música
         return(StrStrIA(no->dados.nome_musica, string) != NULL);
+    else if(tipo_busca == 2) // Busca por país
+        return(StrStrIA(no->dados.pais_musica, string) != NULL);
+    else // Busca por ano de lançamento
+        return (StrStrIA(no->dados.ano_lancamento, string) != NULL);
     // StrStrIA é uma função específica do Windows; ela verifica se uma substring está contida em outra string (como strstr), mas sem levar em conta se os caracteres são maiúsculos ou minúsculos
 }
 
-void buscar_musica_string(Play* pl, int msc_ou_art) // Busca músicas na playlist com base no nome (ou parte do nome) do(s) artista/banda ou da música
+void buscar_musica_string(Play* pl, int tipo_busca) // Busca músicas na playlist com base no nome (ou parte do nome) do(s) artista/banda ou da música
 {
     char string[45];
     int cont = 0;
 
-    if(msc_ou_art == 0) // Se estiver pesquisando por nome de artista/banda
+    if(tipo_busca == 0) // Se estiver pesquisando por nome de artista/banda
         printf("Digite o nome do(a) artista/banda: ");
-    else // Se estiver pesquisando por nome de música
+    else if(tipo_busca == 1) // Se estiver pesquisando por nome de música
         printf("Digite o nome da música: ");
+    else if(tipo_busca == 2) // Se estiver pesquisando pelo país da música ou do artista
+        printf("Digite o país da(o) música/artista: ");
+    else // Se estiver pesquisando pelo ano de lançamento
+        printf("Digite o ano de lançamento: ");
     scanf(" %[^\n]", string);
 
     Play* temp = inicializar_playlist(); // Cria playlist temporária para exibir resultados
@@ -393,7 +401,7 @@ void buscar_musica_string(Play* pl, int msc_ou_art) // Busca músicas na playlis
     Elem* novo_no;
     while(no != NULL) // Percorre playlist original
     {
-        if(condicao_busca_string(no, string, msc_ou_art)) // Se condição for verdadeira (string estiver no nome de música/artista daquele nó)
+        if(condicao_busca_string(no, string, tipo_busca)) // Se condição for verdadeira (string estiver no nome de música/artista daquele nó)
         {
             novo_no = cria_no(no->dados); // Copia dados para novo nó, preservando playlist original
             inserir_musica_playlist(temp, novo_no, 1, 1); // Insere novo nó na playlist temporária
@@ -422,7 +430,9 @@ int opcoes_busca(Play* pl) // Selecionar o critério pelo qual você quer buscar
     printf("1 - ID\n");
     printf("2 - Nome de artista/banda\n");
     printf("3 - Nome de música\n");
-    printf("4 - Sair\n\n");
+    printf("4 - País\n");
+    printf("5 - Ano de lançamento\n");
+    printf("6 - Sair\n\n");
     scanf("%i", &opcao);
 
     system("cls");
@@ -439,6 +449,12 @@ int opcoes_busca(Play* pl) // Selecionar o critério pelo qual você quer buscar
         buscar_musica_string(pl, 1);
     break;
     case 4:
+        buscar_musica_string(pl, 2);
+    break;
+    case 5:
+        buscar_musica_string(pl, 3);
+    break;
+    case 6:
         return 0;
     break;
     default:
